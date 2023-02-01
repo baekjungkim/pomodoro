@@ -47,6 +47,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onResetPressed() {
+    setState(() {
+      totalSeconds = twentyFiveMinutes;
+      isRunning = false;
+    });
+    timer.cancel();
+  }
+
+  void onPomodoroResetPressed() {
+    setState(() {
+      totalPomodoros = 0;
+    });
+  }
+
   String onSecondsConvertToMinutes(int seconds) {
     var duration = Duration(seconds: seconds);
     var formatDuration = duration.toString().split(".").first.substring(2, 7);
@@ -73,16 +87,33 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 50,
+          ),
           Flexible(
             flex: 2,
-            child: Center(
-              child: IconButton(
-                iconSize: 120,
-                color: Theme.of(context).cardColor,
-                onPressed: isRunning ? onPausePressed : onStartPressed,
-                icon: Icon(isRunning
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_outline),
+            child: Container(
+              alignment: Alignment.topCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  totalSeconds != twentyFiveMinutes || isRunning
+                      ? IconButton(
+                          iconSize: 120,
+                          color: Theme.of(context).cardColor,
+                          onPressed: onResetPressed,
+                          icon: const Icon(Icons.refresh_rounded),
+                        )
+                      : const SizedBox.shrink(),
+                  IconButton(
+                    iconSize: 120,
+                    color: Theme.of(context).cardColor,
+                    onPressed: isRunning ? onPausePressed : onStartPressed,
+                    icon: Icon(isRunning
+                        ? Icons.pause_circle_outline
+                        : Icons.play_circle_outline),
+                  ),
+                ],
               ),
             ),
           ),
@@ -117,6 +148,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontWeight: FontWeight.w600,
                             color:
                                 Theme.of(context).textTheme.displayLarge!.color,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: onPomodoroResetPressed,
+                          child: Text(
+                            'reset',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .color,
+                            ),
                           ),
                         ),
                       ],
